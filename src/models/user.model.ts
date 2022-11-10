@@ -1,16 +1,32 @@
-import { RowDataPacket } from 'mysql2';
+import { ResultSetHeader } from 'mysql2';
 import IUsers from '../interfaces/users.Interface';
 import mysql from './connection';
 
-export default class UserModel {
+class UserModel {
   private connection = mysql;
 
-  async getAllUserModel(): Promise<IUsers[]> {
-    const [rows] = await this.connection.execute<IUsers[] & RowDataPacket[]>(`
-    SELECT
-    id, username, classe, level
-    `);
-  
-    return rows;
+  async postAllUserModel(
+    username: string,
+    classe: string,
+    level: number,
+    password: string,
+  ): Promise<IUsers> {
+    const [{ insertId }] = await this.connection.execute<ResultSetHeader>(`
+    INSERT INTO Trybesmith.Users(username, classe, level, password) VALUES
+    (?, ?, ?, ?)`, [username, classe, level, password]);
+
+    const novoUser = {
+      id: insertId,
+      username,
+      classe,
+      level,
+      password,
+    };
+
+    console.log('NOVO USER NA MODEL É ===   ', novoUser);
+
+    return novoUser;
   }
 }
+
+export default UserModel;

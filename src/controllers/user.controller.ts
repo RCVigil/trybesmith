@@ -2,12 +2,20 @@ import { Request, Response } from 'express';
 
 import UserService from '../services/user.service';
 
-export default class UserController {
+class UserController {
   public userService = new UserService();
 
-  public getAllController = async (_req: Request, res: Response) => {
-    const users = await this.userService.getAllService();
+  async postAllController(req: Request, res: Response) {
+    const user = req.body;
 
-    res.status(200).json(users);
-  };
+    const novoUsers = await this.userService.postAllService(user.username, user.classe, user.level, user.password);
+
+    const token = await this.userService.createdToken(user);
+
+    console.log('NOVO USERS NA CONTROLLER É ===>>', novoUsers);
+
+    res.status(201).json({ token });
+  }
 }
+
+export default UserController;
