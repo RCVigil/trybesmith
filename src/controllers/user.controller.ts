@@ -8,7 +8,14 @@ class UserController {
   async postAllController(req: Request, res: Response) {
     const user = req.body;
 
-    const novoUsers = await this.userService.postAllService(user.username, user.classe, user.level, user.password);
+    const novoUsers = await this.userService.postAllService(
+      user.username,
+      user.classe,
+
+      user.level,
+
+      user.password,
+    );
 
     const token = await this.userService.createdToken(user);
 
